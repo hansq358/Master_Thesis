@@ -1,0 +1,74 @@
+---
+title: "visual"
+author: "Han Songqiao"
+date: "2022-09-05"
+output: pdf_document
+---
+
+```{r}
+library(zoo)
+library(ggplot2)
+library(tidyverse)
+library(VIM)
+library(reshape2)
+library(ggpubr)
+data=read.csv('full_result.csv',header = TRUE)
+data$factor1=ifelse(data$CI1_1>data$rho|data$CI2_1<data$rho,1,0)
+data$factor2=ifelse(data$CI1_2>data$rho|data$CI2_2<data$rho,1,0)
+data$factor3=ifelse(data$CI1_3>data$rho|data$CI2_3<data$rho,1,0)
+```
+
+```{r}
+SIM_INPUT <- expand_grid(n=c(20,50,100,200,500,1000,2000),
+                         mu1=c(0.5,1.5,5),
+                         mu2=c(0.5,1.5,5),
+                         sigma1=1,
+                         sigma2=1,
+                         rho=c(-0.9,-0.5,0,0.5,0.9))
+SIM_INPUT$RMSE=rep(0,315)
+SIM_INPUT$GLMM_corr=rep(0,315)
+SIM_INPUT$CI1_3=rep(0,315)
+SIM_INPUT$CI2_3=rep(0,315)
+SIM_INPUT$factor1=rep(0,315)
+SIM_INPUT$factor2=rep(0,315)
+SIM_INPUT$factor3=rep(0,315)
+```
+
+```{r}
+for (i in 1:315){
+  datanew=data[((i-1)*100+1):(i*100),]
+  SIM_INPUT[i,]$RMSE=sqrt(mean((datanew$rho-datanew$GLMM_corr)^2))
+  SIM_INPUT[i,]$GLMM_corr=mean(datanew$GLMM_corr)
+  SIM_INPUT[i,]$CI1_3=mean(datanew$CI1_3)
+  SIM_INPUT[i,]$CI2_3=mean(datanew$CI2_3)
+  SIM_INPUT[i,]$factor1=mean(datanew$factor1)
+  SIM_INPUT[i,]$factor2=mean(datanew$factor2)
+  SIM_INPUT[i,]$factor3=mean(datanew$factor3)
+}
+y <- matrix(SIM_INPUT$factor3, ncol = 5, byrow = TRUE)
+1-apply(y, 1, mean)
+1-mean(SIM_INPUT$factor1);1-mean(SIM_INPUT$factor2);1-mean(SIM_INPUT$factor3)
+write.csv(x = SIM_INPUT,file = "summary22.csv")
+```
+
+```{r}
+png(file="RMSE.png", res=300, width=3000, height=2000)
+bp = ggplot(data=SIM_INPUT,
+aes(x=as.factor(n), y=RMSE, fill = as.factor(n))) +
+  geom_boxplot()+ xlab('Number of cells')+
+    ylab('RMSE')+scale_fill_discrete(name="Number of cells", labels=c("20","50","100","200","500","1000","2000"))
+bp+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+```{r}
+data$sim1_mi=data$CI2_1-data$CI1_1
+data$sim2_mi=data$CI2_2-data$CI1_2
+data$sim3_mi=data$CI2_3-data$CI1_3
+mean(data$sim1_mi);mean(data$sim2_mi);mean(data$sim3_mi)
+```

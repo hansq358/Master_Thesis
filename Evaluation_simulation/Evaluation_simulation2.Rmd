@@ -1,0 +1,990 @@
+---
+title: "evaluation"
+author: "Han Songqiao"
+date: "2022/4/13"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(zoo)
+library(ggplot2)
+library(tidyverse)
+library(VIM)
+library(reshape2)
+library(ggpubr)
+data=read.csv('full_result.csv',header = TRUE)
+```
+
+So, first group, we select mu1=0.5(Low) & mu2=0.5(Low):
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==0.5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==0.5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==0.5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==0.5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==0.5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+From the results, we would see that the third method estimations are closer to the true value.
+
+Then, the second group, we select mu1=0.5(Low) & mu2=1.5(Medium):
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==1.5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==1.5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==1.5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==1.5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==1.5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+Then, the third group, we select mu1=0.5(Low) & mu2=5(High):
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==0.5&data$mu2==5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+From the third group, we would see that the third method estimations are closer to the true value.
+
+Then, the fourth group, we select mu1=1.5(Medium) & mu2=0.5(Low):
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==0.5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==0.5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==0.5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==0.5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==0.5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+Then, the fifth group, we select mu1=1.5(Medium) & mu2=1.5(Medium):
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==1.5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==1.5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==1.5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==1.5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==1.5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+Then, the sixth group, we select mu1=1.5(Medium) & mu2=5(High):
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==1.5&data$mu2==5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+Then, the seventh group, we select mu1=5(High) & mu2=0.5(Low):
+```{r}
+data1=data[which(data$mu1==5&data$mu2==0.5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==0.5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==0.5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==0.5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==0.5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+Then, the eighth group, we select mu1=5(High) & mu2=1.5(Medium):
+```{r}
+data1=data[which(data$mu1==5&data$mu2==1.5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==1.5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==1.5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==1.5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==1.5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+At last, the final group, we select mu1=5(High) & mu2=5(High):
+```{r}
+data1=data[which(data$mu1==5&data$mu2==5&data$rho==-0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="1.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==5&data$rho==-0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="2.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=-0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==5&data$rho==0),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==5&data$rho==0.5),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="4.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.5),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+
+```{r}
+data1=data[which(data$mu1==5&data$mu2==5&data$rho==0.9),]
+data2=data1[,c("n","Pearson_corr","Log_corr","GLMM_corr")]
+data3 = melt(data2, id.vars = c('n'))
+png(file="5.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=value, fill=variable)) + 
+    geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="Three methods on correlation", labels=c("Pearson","Log-transformed","Poisson GLMM"))+
+    geom_hline(aes(yintercept=0.9),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+From the results, except the last group, the third method show a great advantage in estimating. In the final group, when both mean levels are high, the second method and the third method shows roughly the same.
+
+## You can change the n below and the "Pearson_corr","Log_corr","GLMM_corr" for the choices to get the full boxplots.
+## Below is just an exampl
+```{r}
+data1=data[which(data$n==2000|data$n==1000),]
+data2=data1[,c("n","mu1","mu2","GLMM_corr")]
+data2$mu1_mu2=paste("mu1=",data1$mu1,"mu2=",data1$mu2,sep=" ")
+data3=data2[,c("n","GLMM_corr","mu1_mu2")]
+png(file="3.png", res=300, width=3000, height=2000)
+p1=ggplot(data3, aes(x=as.factor(n), y=GLMM_corr, fill=as.factor(mu1_mu2)))+geom_boxplot()+ylim(-1,1)+
+    xlab('Number of cells')+
+    ylab('Correlation')+
+    scale_fill_discrete(name="9 pairs of means group", labels=c("Group A","Group B","Group C","Group D","Group E","Group F","Group G","Group H","Group I"))+
+    geom_hline(aes(yintercept=0),linetype="dashed",color = "red",size=0.8)
+p1+theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  legend.key.size = unit(1.2, 'cm'),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```

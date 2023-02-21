@@ -1,0 +1,27 @@
+---
+title: "evaluation"
+author: "Han Songqiao"
+date: "2022/4/13"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(zoo)
+library(ggplot2)
+library(tidyverse)
+library(VIM)
+library(reshape2)
+library(ggpubr)
+data=read.csv('result01.csv',header = TRUE)
+```
+
+```{r}
+data1=data[data$sigma1==0.2&data$sigma2==0.2,]
+data1[!complete.cases(data1),]
+data2=data[data$sigma1==0.3&data$sigma2==0.3,]
+data2[!complete.cases(data2),]
+data3=data[data$sigma1==0.4&data$sigma2==0.4,]
+data3[!complete.cases(data3),]
+```
