@@ -1,6 +1,6 @@
 # Master_Thesis
 
-This thesis was written as part of the master’s program in Statistics and Data Science at Leiden University. It focuses on finding modules of highly-correlated genes in single-cell RNA-seq data. In this thesis, we will try to use the Poisson Generalized Linear Mixed Model to estimate the correlation between genes more accurately and efficiently. This thesis project was supervised by Dr. Szymon M. Kie lbasa and Prof. Dr. Jelle Goeman at Leiden University Medical Center.
+This thesis was written as part of the master’s program in Statistics and Data Science at Leiden University. It focuses on finding modules of highly-correlated genes in single-cell RNA-seq data. In this thesis, we will try to use the Poisson Generalized Linear Mixed Model to estimate the correlation between genes more accurately and efficiently. This thesis project was supervised by Dr. Szymon M. Kielbasa and Prof. Dr. Jelle Goeman at Leiden University Medical Center.
 
 ## Authors
 _Songqiao Han_
