@@ -1,0 +1,170 @@
+---
+title: "Untitled"
+author: "Han Songqiao"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+set.seed(123)
+data=read.csv(file="cell cycle.csv",header=TRUE)
+rawdata=read.csv(file='rawdata1.csv',header = TRUE)
+row.names(rawdata)=rawdata$X
+data1=as.data.frame(t(rawdata[,-1]))
+```
+
+```{r}
+final=as.data.frame(matrix(nrow=711,ncol=104))
+rownames(final)=rownames(data1)
+list=as.data.frame(intersect(data$Gene.Symbol, colnames(data1)))
+colnames(list)="gene_name"
+for (i in 1:104){
+  final[,i]=data1[,list[i,]]
+  colnames(final)=list$gene_name
+}
+final=as.data.frame(t(final))
+```
+
+```{r}
+sd=as.data.frame(apply(final,1,sd))
+mean=as.data.frame(apply(final,1,mean))
+colnames(sd)="sd"
+colnames(mean)="mean"
+final$sd=sd$sd
+final$mean=mean$mean
+sub=as.data.frame(final[final$sd>=0.4,])
+sub <- sub[order(sub$mean),]
+sub=sub[,1:(length(sub)-2)]
+```
+
+```{r}
+n=ncol(sub);p=nrow(sub)
+sub=as.data.frame(t(sub))
+sub$Lib_Size=rowSums(sub)
+sub=sub[sub$Lib_Size>0,]
+n=dim(sub)[1]
+sub=sub[,1:(length(sub)-1)]
+sub1=data.frame(count=unlist(sub))
+sub1$gene=rep(1:p,each=n)
+sub1$id=rep(1:n,p)
+#sub1$Lib_Size=Lib$Lib_Size
+sub$Lib_Size=rowSums(sub)
+sub1$Lib_Size=sub$Lib_Size
+```
+
+```{r}
+result=as.data.frame(matrix(nrow=p,ncol=p))
+colnames(result)=colnames(sub[,1:p])
+rownames(result)=colnames(result)
+diag(result)=1
+sub1$gene=as.factor(sub1$gene)
+sub1$id=as.factor(sub1$id)
+```
+
+```{r}
+for (i in 1:p){
+  for (j in 1:p){
+    if (i < j){
+      data1=sub1[c(((i-1)*n+1):(i*n),((j-1)*n+1):(j*n)),]
+      model1=glmer(count~gene+(0+gene|id)+offset(log(Lib_Size)),family=poisson,data=data1)
+      result[i,j]=attr(VarCorr(model1)$id,"correlation")[2,1]
+    }
+  }
+}
+write.csv(result,file = "cell_cycle.csv")
+```
+
+```{r}
+library(corrplot)
+result[is.na(result)] = 0
+result1=as.matrix(result)
+png(file="corr5.png", res=300, width=4500, height=4500)
+corrplot(result1, method="square", type="upper")
+dev.off()
+```
+
+```{r}
+result2=as.data.frame(matrix(nrow=p,ncol=p))
+colnames(result2)=colnames(sub[,1:p])
+rownames(result2)=colnames(result2)
+diag(result2)=1
+```
+
+```{r}
+for (i in 1:p){
+  for (j in 1:p){
+    if (i < j){
+      data1=sub1[c(((i-1)*n+1):(i*n),((j-1)*n+1):(j*n)),]
+      data2=sub1[((i-1)*n+1):(i*n),]$count
+      data2_Lib_Size=sub1[((i-1)*n+1):(i*n),]$Lib_Size
+      data3=sub1[((j-1)*n+1):(j*n),]$count
+      data3_Lib_Size=sub1[((i-1)*n+1):(i*n),]$Lib_Size
+      result2[i,j]=cor((log(data2+1)-log(data2_Lib_Size)),(log(data3+1)-log(data3_Lib_Size)))
+    }
+  }
+} 
+```
+
+## you can get density plots using the following codes 
+## it is the same to get density plot for the following result
+
+```{r}
+hist2=result2
+diag(hist2)=0
+hist2_1=melt(hist2)
+hist2_1$value[is.na(hist2_1$value)] = 0
+hist2_1=hist2_1[hist2_1$value!=0,]
+png(file="hist_KEGG_log.png", res=300, width=2000, height=2000)
+h1 <- ggplot(hist2_1, aes(x=value)) + 
+    geom_density()+xlim(-1,1)+
+    xlab('Estimated correlation')+
+    ylab('Density')
+h1+geom_vline(aes(xintercept=mean(value)),
+            color="blue", linetype="dashed", size=0.8)+
+  theme(
+  axis.title.x = element_text(size=14, face="bold"),
+  axis.title.y = element_text(size=14, face="bold"),
+  axis.text.x = element_text(face="bold", size=10),
+  axis.text.y = element_text(face="bold", size=10))
+dev.off()
+```
+
+```{r}
+library(corrplot)
+result2[is.na(result2)] = 0
+result3=as.matrix(result2)
+png(file="corr3.png", res=300, width=4500, height=4500)
+corrplot(result3, method="square", type="upper")
+dev.off()
+```
+
+```{r}
+result4=as.data.frame(matrix(nrow=p,ncol=p))
+colnames(result4)=colnames(sub[,1:p])
+rownames(result4)=colnames(result4)
+diag(result4)=1
+```
+
+```{r}
+for (i in 1:p){
+  for (j in 1:p){
+    if (i < j){
+      data1=sub1[c(((i-1)*n+1):(i*n),((j-1)*n+1):(j*n)),]
+      data2=sub1[((i-1)*n+1):(i*n),]$count
+      data2_Lib_Size=sub1[((i-1)*n+1):(i*n),]$Lib_Size
+      data3=sub1[((j-1)*n+1):(j*n),]$count
+      data3_Lib_Size=sub1[((i-1)*n+1):(i*n),]$Lib_Size
+      result4[i,j]=cor(data2,data3)
+    }
+  }
+} 
+```
+
+```{r}
+library(corrplot)
+result4[is.na(result4)] = 0
+result5=as.matrix(result4)
+png(file="corr5.png", res=300, width=4500, height=4500)
+corrplot(result5, method="square", type="upper")
+dev.off()
+```
