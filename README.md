@@ -7,7 +7,8 @@ _Songqiao Han_
 
 ## Introduction
 
-In the **[Simualtion](https://github.com/hansq358/Master_Thesis/tree/main/Simulation)** file, there are three R files corresponde to the three simulations in the thesis respectively. 
-In the **[Evaluation_simulation](https://github.com/hansq358/Master_Thesis/tree/main/Evaluation_simulation)** file, there are three files evaluate the simulation result from simulation 2 and 3.
-In the **[Simualtion](https://github.com/hansq358/Master_Thesis/tree/main/Real%20data%20analysis)** file, there is a R file [Get_cluster](https://github.com/hansq358/Master_Thesis/blob/main/Real%20data%20analysis/Get_cluster.Rmd) which can get the raw data, other three R files corresponde to the application on three different datasets in the thesis respectively.
+**(1)** In the **[Simualtion](https://github.com/hansq358/Master_Thesis/tree/main/Simulation)** file, there are three R files corresponde to the three simulations in the thesis respectively. <br/>
+**(2)** In the **[Evaluation_simulation](https://github.com/hansq358/Master_Thesis/tree/main/Evaluation_simulation)** file, there are three files evaluate the simulation result from simulation 2 and 3. <br/>
+**(3)** In the **[Real data analysis](https://github.com/hansq358/Master_Thesis/tree/main/Real%20data%20analysis)** file, there is a R file [Get_cluster](https://github.com/hansq358/Master_Thesis/blob/main/Real%20data%20analysis/Get_cluster.Rmd) which can get the raw data, other three R files corresponde to the application on three different datasets in the thesis respectively. <br/>
 If you have any questions, contact me s.han@umail.leidenuniv.nl
+
