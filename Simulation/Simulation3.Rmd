@@ -1,0 +1,139 @@
+---
+title: "GLMM"
+author: "Han Songqiao"
+date: "2022/3/2"
+output: pdf_document
+---
+
+```{r}
+set.seed(123)#set seed
+library(tidyverse)
+library(MASS)
+library(lme4)
+library(ggplot2)
+library(reshape2)
+library(dplyr)
+library(merDeriv)
+SIM_INPUT <- expand_grid(n=c(20,50,100,200,500,1000,2000),
+                         mu1=0.05,
+                         mu2=0.05,
+                         sigma1=c(0.2,0.3,0.4),
+                         sigma2=c(0.2,0.3,0.4),
+                         rho=c(-0.9,-0.5,0,0.5,0.9),
+                         rep=1:100)
+Lib_Size=as.data.frame(sample(500:10000,2000))
+```
+
+
+```{r}
+simulation <- function(l){
+  tryCatch(
+    {
+    n=l$n
+    mu1=l$mu1
+    mu2=l$mu2
+    sigma1=l$sigma1
+    sigma2=l$sigma2
+    rho=l$rho
+    Sigma <- matrix(c((sigma1)^2,sigma1*sigma2*rho,sigma1*sigma2*rho,sigma2^2),2,2)#cov-variance matrix
+    mn = mvrnorm(n, c(mu1,mu2), Sigma) # two columns from the bi-normal dis.
+    lambda1=exp(mn[,1]) #poisson distribution 1
+    lambda2=exp(mn[,2]) #poisson distribution 2
+    data1=as.data.frame(matrix(nrow=n,ncol=2))
+    colnames(data1)=c("gene1","gene2")
+    data1$gene1=lambda1;data1$gene2=lambda2
+    data1$Lib_Size=Lib_Size[1:n,]
+    data1$Log_Lib_Size=log(data1$Lib_Size)
+    M_Lib_Size=mean(data1$Log_Lib_Size)
+    data1$L=data1$Log_Lib_Size-M_Lib_Size
+    lambda1_new=lambda1*exp(data1$L)
+    lambda2_new=lambda2*exp(data1$L)
+    x1_new=rpois(n,lambda=lambda1_new)
+    x2_new=rpois(n,lambda=lambda2_new)
+    data1_new=data.frame(c(x1_new,x2_new))
+    data1_new$gene=rep(1,2*n)
+    data1_new$gene[(n+1):(2*n)]=2
+    data1_new$id=rep(1:n,2)
+    colnames(data1_new)[1]='count'
+    data1_new$gene=as.factor(data1_new$gene)
+    data1_new$id=as.factor(data1_new$id)
+    data1_new$L=rep(data1$L,2)
+    #3 two correlation methods
+    rho1=cor(x1_new/data1$Lib_Size,x2_new/data1$Lib_Size)
+    rho2=cor((log(x1_new+1)-data1$Log_Lib_Size),(log(x2_new+1)-data1$Log_Lib_Size))
+    #4 mixed models
+    model1=glmer(count ~ gene+(0+gene|id)+offset(L),family=poisson,data=data1_new)
+    rho3=attr(VarCorr(model1)$id,"correlation")[2,1]
+    l$sim1=rho1
+    l$sim2=rho2
+    l$sim3=rho3
+    if (rho3 <= 0.99 & rho3 >= -0.99){
+      var1 = diag(as.matrix(vcov(model1, full = TRUE, ranpar = "var")))[4]
+      if (var1 <= 0){
+        l$CI1=rho3
+        l$CI2=rho3
+      } else{
+        CI1=rho3+qnorm(0.025)*sqrt(var1)
+        CI2=rho3+qnorm(0.975)*sqrt(var1)
+        l$CI1=CI1
+        l$CI2=CI2
+      }
+    } else {
+      l$CI1=rho3
+      l$CI2=rho3
+    }
+    return(as_tibble(l))
+    },
+    error=function(e){
+      n=l$n
+      mu1=l$mu1
+      mu2=l$mu2
+      sigma1=l$sigma1
+      sigma2=l$sigma2
+      rho=l$rho
+      Sigma <- matrix(c((sigma1)^2,sigma1*sigma2*rho,sigma1*sigma2*rho,sigma2^2),2,2)#cov-variance matrix
+      mn = mvrnorm(n, c(mu1,mu2), Sigma) # two columns from the bi-normal dis.
+      lambda1=exp(mn[,1]) #poisson distribution 1
+      lambda2=exp(mn[,2]) #poisson distribution 2
+      data2=as.data.frame(matrix(nrow=n,ncol=2))
+      colnames(data2)=c("gene1","gene2")
+      data2$gene1=lambda1;data2$gene2=lambda2
+      data2$Lib_Size=Lib_Size[1:n,]
+      data2$Log_Lib_Size=log(data2$Lib_Size)
+      M_Lib_Size=mean(data2$Log_Lib_Size)
+      data2$L=data2$Log_Lib_Size-M_Lib_Size
+      lambda1_new=lambda1*exp(data2$L)
+      lambda2_new=lambda2*exp(data2$L)
+      x1_new=rpois(n,lambda=lambda1_new)
+      x2_new=rpois(n,lambda=lambda2_new)
+      data1_new=data.frame(c(x1_new,x2_new))
+      data1_new$gene=rep(1,2*n)
+      data1_new$gene[(n+1):(2*n)]=2
+      data1_new$id=rep(1:n,2)
+      colnames(data1_new)[1]='count'
+      data1_new$gene=as.factor(data1_new$gene)
+      data1_new$id=as.factor(data1_new$id)
+      data1_new$L=rep(data2$L,2)
+      #3 two correlation methods
+      rho1=cor(x1_new/data2$Lib_Size,x2_new/data2$Lib_Size)
+      rho2=cor((log(x1_new+1)-data2$Log_Lib_Size),(log(x2_new+1)-data2$Log_Lib_Size))
+      #4 mixed models
+      model1=glmer(count ~ gene+(0+gene|id)+offset(L),family=poisson,data=data1_new)
+      rho3=attr(VarCorr(model1)$id,"correlation")[2,1]
+      l$sim1=rho1
+      l$sim2=rho2
+      l$sim3=rho3
+      return(as_tibble(l))
+    }
+  )
+}
+  
+```
+
+```{r}
+set.seed(123)
+result <- bind_rows(lapply(1:nrow(SIM_INPUT),function(r){
+  simulation(as.list(SIM_INPUT[r,]))
+}))
+write.csv(x = result,file = "result_sigma.csv")
+```
